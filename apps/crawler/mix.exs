@@ -20,7 +20,7 @@ defmodule Crawler.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.11.2"},
-     {:floki, "~> 0.17.2"}]
+    [{:floki, "~> 0.17.2"},
+     {:httpoison, "~> 0.11.2"}]
   end
 end
