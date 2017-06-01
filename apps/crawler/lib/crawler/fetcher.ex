@@ -1,23 +1,33 @@
 defmodule Crawler.Fetcher do
   use GenServer
 
+  defstruct adapter: nil
+
+  # Client
+
   def start_link(adapter \\ HTTPoison) do
-    GenServer.start_link(Crawler.Fetcher, adapter, [])
+    state = %Crawler.Fetcher{adapter: adapter}
+
+    GenServer.start_link(Crawler.Fetcher, state, [])
   end
 
   def find_urls(pid, url) do
     GenServer.call(pid, {:find_urls, url}, 20_000)
   end
 
-  def handle_call({:find_urls, url}, _from, adapter) do
+  # Server
+
+  def handle_call({:find_urls, url}, _from, state) do
     children =
       url
-      |> Fetcher.get(adapter)
+      |> Fetcher.get(state.adapter)
       |> normalize_fetching_result()
       |> Parser.find_links(url)
 
-    {:reply, children, adapter}
+    {:reply, children, state}
   end
+
+  # Utils
 
   defp normalize_fetching_result({:ok, body}) do
     body

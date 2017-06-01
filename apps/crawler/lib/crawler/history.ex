@@ -11,8 +11,8 @@ defmodule Crawler.History do
     GenServer.call(pid, {:add_visit, {url, children_urls}})
   end
 
-  def next_urls(pid) do
-    GenServer.call(pid, :next_urls)
+  def next_batch_of_urls(pid) do
+    GenServer.call(pid, :next_batch_of_urls)
   end
 
   def page(pid, url) do
@@ -27,7 +27,7 @@ defmodule Crawler.History do
 
     {:reply, :ok, new_state}
   end
-  def handle_call(:next_urls, _from, state) do
+  def handle_call(:next_batch_of_urls, _from, state) do
     {urls, updated_to_visits} = Queue.remove(state.to_visits, state.batch_size)
 
     {:reply, urls, put_to_visits(state, updated_to_visits)}

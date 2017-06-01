@@ -9,7 +9,7 @@ defmodule Crawler.Supervisor do
     children = [
       worker(Crawler.History, [root_url, fetchers_count], id: History),
       worker(Crawler.Worker, [], id: Worker),
-      supervisor(:poolboy, [[worker_module: Crawler.Fetcher, size: fetchers_count, max_overflow: 2], adapter], id: Fetchers)
+      supervisor(:poolboy, [[worker_module: Crawler.Fetcher, size: fetchers_count], adapter], id: Fetchers)
     ]
 
     supervise(children, strategy: :rest_for_one)
@@ -29,8 +29,8 @@ defmodule Crawler.Supervisor do
     end)
   end
 
-  def next_urls(supervisor_pid) do
-    Crawler.History.next_urls(find_worker(supervisor_pid, History))
+  def next_batch_of_urls(supervisor_pid) do
+    Crawler.History.next_batch_of_urls(find_worker(supervisor_pid, History))
   end
 
   def page_from_history(supervisor_pid, url) do
