@@ -15,7 +15,7 @@ export const resetCrawler = () => {
   }
 }
 
-export const startCrawler = (url) => {
+export const startCrawler = (url, power) => {
   return (dispatch) => {
     dispatch(startCrawlerRequested(url))
 
@@ -28,9 +28,9 @@ export const startCrawler = (url) => {
         channel.on('link_found', page => { dispatch(addPageToCrawlerSucceeded(page)) })
         channel.on('stopped', page => { dispatch(stopCrawlerSucceeded()) })
 
-        channel.push('crawl', {url: url})
+        channel.push('crawl', {url: url, power: power})
 
-        dispatch(startCrawlerSucceeded(channel))
+        dispatch(startCrawlerSucceeded(channel, power))
       })
       .receive('error', error => {
         dispatch(startCrawlerFailed(error))
@@ -52,35 +52,36 @@ export const resetCrawlerSucceeded = () => {
   }
 }
 
-export const addPageToCrawlerSucceeded = (page) => {
+export const addPageToCrawlerSucceeded = page => {
   return {
     type: ADD_PAGE_TO_CRAWLER_SUCCEEDED,
     page: page
   }
 }
 
-export const startCrawlerFailed = (error) => {
+export const startCrawlerFailed = error => {
   return {
     type: START_CRAWLER_FAILED,
     error: error
   }
 }
 
-export const startCrawlerRequested = (url) => {
+export const startCrawlerRequested = url => {
   return {
     type: START_CRAWLER_REQUESTED,
     url: url
   }
 }
 
-export const startCrawlerSucceeded = (channel) => {
+export const startCrawlerSucceeded = (channel, power) => {
   return {
     type: START_CRAWLER_SUCCEEDED,
-    channel: channel
+    channel: channel,
+    power: power
   }
 }
 
-export const stopCrawlerFailed = (error) => {
+export const stopCrawlerFailed = error => {
   return {
     type: STOP_CRAWLER_FAILED,
     error: error

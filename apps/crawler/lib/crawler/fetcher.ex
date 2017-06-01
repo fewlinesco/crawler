@@ -6,7 +6,7 @@ defmodule Crawler.Fetcher do
   end
 
   def find_urls(pid, url) do
-    GenServer.call(pid, {:find_urls, url})
+    GenServer.call(pid, {:find_urls, url}, 20_000)
   end
 
   def handle_call({:find_urls, url}, _from, adapter) do

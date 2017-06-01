@@ -9,6 +9,7 @@ const mapStateToProps = (state, ownProps) => {
     error: state.Crawler.error,
     loading: state.Crawler.loading,
     pages: state.Crawler.pages,
+    power: state.Crawler.power,
     running: state.Crawler.running,
     url: state.Crawler.url
   }
@@ -19,8 +20,8 @@ const mapDispatchToProps = dispatch => {
     handleReset: () => {
       dispatch(resetCrawler())
     },
-    handleStartCrawler: url => {
-      dispatch(startCrawler(url))
+    handleStartCrawler: (url, power) => {
+      dispatch(startCrawler(url, power))
     },
     handleStopCrawler: channel => {
       dispatch(stopCrawler(channel))

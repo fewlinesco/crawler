@@ -1,10 +1,10 @@
 defmodule Crawler.History do
   use GenServer
 
-  defstruct root_url: nil, visited_pages: %{}, to_visits: nil, batch_size: 10
+  defstruct root_url: nil, visited_pages: %{}, to_visits: nil, batch_size: nil
 
-  def start_link(root_url, options \\ []) do
-    GenServer.start_link(Crawler.History, create_state(root_url), options)
+  def start_link(root_url, batch_size, options \\ []) do
+    GenServer.start_link(Crawler.History, create_state(root_url, batch_size), options)
   end
 
   def add_visit(pid, url, children_urls) do
@@ -36,8 +36,8 @@ defmodule Crawler.History do
     {:reply, Map.get(state.visited_pages, url), state}
   end
 
-  defp create_state(root_url) do
-    %Crawler.History{root_url: root_url, to_visits: Queue.new(root_url)}
+  defp create_state(root_url, batch_size) do
+    %Crawler.History{root_url: root_url, to_visits: Queue.new(root_url), batch_size: batch_size}
   end
 
   defp put_to_visits(state, to_visits) do

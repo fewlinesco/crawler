@@ -13,10 +13,10 @@ defmodule Web.CrawlerChannel do
     {:noreply, socket}
   end
 
-  def handle_in("crawl", %{"url" => url}, socket) do
+  def handle_in("crawl", %{"url" => url, "power" => fetchers_count}, socket) do
     new_socket = assign(socket, :url, url)
 
-    Crawlers.Supervisor.crawl(url, fn {:link_found, url, children_urls} ->
+    Crawlers.Supervisor.crawl(url, fetchers_count, fn {:link_found, url, children_urls} ->
       push(new_socket, "link_found", %{url: url, children: children_urls})
     end)
 

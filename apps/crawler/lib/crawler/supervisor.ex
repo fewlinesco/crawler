@@ -1,15 +1,15 @@
 defmodule Crawler.Supervisor do
   use Supervisor
 
-  def start_link(root_url, options) do
-    Supervisor.start_link(__MODULE__, root_url, options)
+  def start_link(root_url, fetchers_count, options) do
+    Supervisor.start_link(__MODULE__, {root_url, fetchers_count}, options)
   end
 
-  def init(root_url, adapter \\ HTTPoison) do
+  def init({root_url, fetchers_count}, adapter \\ HTTPoison) do
     children = [
-      worker(Crawler.History, [root_url], id: History),
-      worker(Crawler.Worker, [root_url], id: Worker),
-      supervisor(:poolboy, [[worker_module: Crawler.Fetcher, size: 5, max_overflow: 5], adapter], id: Fetchers)
+      worker(Crawler.History, [root_url, fetchers_count], id: History),
+      worker(Crawler.Worker, [], id: Worker),
+      supervisor(:poolboy, [[worker_module: Crawler.Fetcher, size: fetchers_count, max_overflow: 2], adapter], id: Fetchers)
     ]
 
     supervise(children, strategy: :rest_for_one)

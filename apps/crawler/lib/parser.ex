@@ -8,15 +8,17 @@ defmodule Parser do
     |> Enum.map(fn uri -> build_url(uri, current_url) end)
   end
 
-  defp build_url(uri = %URI{host: host}, current_url) when not is_nil(host) do
+  def build_url(uri = %URI{host: host}, current_url) when not is_nil(host) do
     uri
     |> put_scheme(current_url)
+    |> discard_fragments()
     |> URI.to_string
   end
-  defp build_url(uri, current_url) do
+  def build_url(uri, current_url) do
     current_url
     |> URI.parse
     |> URI.merge(uri)
+    |> discard_fragments()
     |> URI.to_string
   end
 
@@ -25,6 +27,10 @@ defmodule Parser do
   end
   def valid_uri?(_uri) do
     false
+  end
+
+  defp discard_fragments(uri) do
+    %URI{uri | fragment: nil}
   end
 
   defp put_scheme(uri = %URI{scheme: nil}, current_url) do

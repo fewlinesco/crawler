@@ -22,9 +22,10 @@ defmodule Fetcher do
   end
 
   defp ensure_html({:ok, response = %HTTPoison.Response{headers: headers}}) do
-    Enum.find_value(headers, {:error, :wrong_content_type}, fn
-      {"Content-Type", "text/html" <> _any_encoding} -> {:ok, response}
-      _ -> nil
+    Enum.find_value(headers, {:error, :wrong_content_type}, fn {name, value} ->
+      if "content-type" == String.downcase(name) && String.starts_with?(String.downcase(value), "text/html") do
+        {:ok, response}
+      end
     end)
   end
   defp ensure_html(error) do

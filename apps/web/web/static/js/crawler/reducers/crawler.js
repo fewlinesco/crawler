@@ -15,6 +15,7 @@ const initialState = {
   error: null,
   loading: false,
   pages: null,
+  power: 10,
   running: false,
   url: null
 }
@@ -51,6 +52,7 @@ export default (state = initialState, action) => {
         error: null,
         loading: false,
         pages: [],
+        power: action.power,
         running: true
       }
     case STOP_CRAWLER_FAILED:
