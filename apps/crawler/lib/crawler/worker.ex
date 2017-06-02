@@ -20,7 +20,9 @@ defmodule Crawler.Worker do
   def handle_cast({:crawl, callback}, state) do
     fetch_batch_of_urls(state.supervisor_pid, callback)
 
-    {:noreply, state}
+    Crawler.Supervisor.stop(state.supervisor_pid)
+
+    {:stop, :normal, state}
   end
 
   # Utils
